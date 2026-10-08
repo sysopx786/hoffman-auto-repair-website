@@ -1,0 +1,20 @@
+{
+  "name": "Dave Hoffman Auto Repair",
+  "baseUrl": "https://REPLACE-WITH-DOMAIN",
+  "phoneDisplay": "484-921-0715",
+  "phoneTel": "+14849210715",
+  "phoneSecondaryDisplay": "(610) 935-1103",
+  "phoneSecondaryTel": "+16109351103",
+  "street": "42 Ridge Rd",
+  "city": "Phoenixville",
+  "region": "PA",
+  "zip": "19460",
+  "hoursLine": "Mon–Fri 8:00 AM–6:00 PM",
+  "hoursShort": "Mon–Fri 8 AM–6 PM",
+  "lat": 40.1481356,
+  "lng": -75.5533232,
+  "ois": "T480",
+  "googleReviewUrl": null,
+  "showPhotoComingLabel": false,
+  "showRatingBadge": false
+}

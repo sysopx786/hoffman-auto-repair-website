@@ -9,12 +9,13 @@
   "city": "Phoenixville",
   "region": "PA",
   "zip": "19460",
-  "hoursLine": "Mon–Fri 8:00 AM–6:00 PM",
-  "hoursShort": "Mon–Fri 8 AM–6 PM",
+  "hoursLine": "Mon\u2013Fri 8:00 AM\u20136:00 PM",
+  "hoursShort": "Mon\u2013Fri 8 AM\u20136 PM",
   "lat": 40.1481356,
   "lng": -75.5533232,
   "ois": "T480",
   "googleReviewUrl": null,
   "showPhotoComingLabel": false,
-  "showRatingBadge": false
+  "showRatingBadge": false,
+  "basePath": "/hoffman-auto-repair-website/"
 }

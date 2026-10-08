@@ -390,7 +390,7 @@ def page_404():
     d=0
     h=head('404',d,f'Page not found | {NAME}','That page does not exist.','/404.html',None)
     h=h.replace('<meta name="description"','<meta name="robots" content="noindex"><meta name="description"',1)
-    h=h.replace('<head>','<head><base href="/">',1)
+    h=h.replace('<head>',f'<head><base href="{C.get("basePath","/")}">',1)
     h+=header(d,'')+f'''<main id="main"><div class="wrap err"><div><div class="n" aria-hidden="true">404</div><h1 style="font-size:clamp(1.8rem,3vw,2.6rem)">This page took a wrong turn.</h1><p class="lede" style="margin-inline:auto">Try the services list, or call us at <a href="tel:{TEL}">{PH}</a>.</p><div class="cta-row" style="justify-content:center"><a class="btn btn-call" href="./">Back to home</a><a class="btn btn-ghost" href="services/">Browse services</a></div></div></div></main>'''+footer(d)
     # 404 is served from any depth on GitHub Pages: make asset/links absolute-from-root-safe via <base>
     (ROOT/'404.html').write_text(h,encoding='utf-8')

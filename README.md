@@ -9,3 +9,13 @@ Plain HTML/CSS/JS. No framework, no tracking, no build dependency beyond Python 
 - Preview: `python3 -m http.server 8000`.
 - Logo: `assets/img/logo-dimensional-*.webp` (original art), `logo-flat*.svg` (traced), `logo.py` approach in release report.
 - Read `LAUNCH-BLOCKERS.md` before going live.
+
+## Links
+
+| Link | URL | Status |
+|---|---|---|
+| Private preview | https://claude.ai/artifact/JTFztkLL9nYaVxe5HMD2No | Opens for the owner only. Share from the page's Share menu. |
+| Public site | https://sysopx786.github.io/hoffman-auto-repair-website/ | Live only after GitHub Pages is enabled (Settings → Pages → branch `main`, folder `/`). Not confirmed enabled. |
+| Repository | https://github.com/sysopx786/hoffman-auto-repair-website | |
+
+The public URL has a path prefix, so `404.html` (which uses `<base href="/">`) works only on a custom domain at the root.

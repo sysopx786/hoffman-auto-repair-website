@@ -49,7 +49,7 @@ var pal=$('#pal'),idx=window.__SERVICES||[];
 if(pal&&idx.length&&typeof pal.showModal==='function'){
  var inp=$('input',pal),list=$('.pal-list',pal),sel=0,cur=[];
  var base=de.getAttribute('data-base')||'';
- var render=function(q){q=q.trim().toLowerCase();cur=idx.filter(function(s){return!q||(s.n+' '+s.c).toLowerCase().indexOf(q)>-1}).slice(0,40);sel=0;
+ var render=function(q){q=q.trim().toLowerCase();cur=idx.filter(function(s){return!q||(s.n+' '+s.c).toLowerCase().indexOf(q)>-1});sel=0;
   list.innerHTML=cur.length?cur.map(function(s,i){return'<li><a href="'+base+s.u+'"'+(i===0?' class="sel"':'')+'><span>'+s.n+'</span><small>'+s.c+'</small></a></li>'}).join(''):'<li class="pal-empty">No match. Call us at the number above and ask.</li>'};
  var openP=function(){pal.showModal();inp.value='';render('');inp.focus()};
  $$('[data-open-pal]').forEach(function(b){b.addEventListener('click',openP)});

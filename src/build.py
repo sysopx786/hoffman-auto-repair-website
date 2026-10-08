@@ -145,7 +145,8 @@ def header(depth,current):
     def a(label,url,key): 
         cur=' aria-current="page"' if current==key else ''
         return f'<a href="{link(url,depth)}"{cur}>{label}</a>'
-    mega=''.join(f'<a href="{link(c["url"],depth)}">{ic(ICON[c["url"]])}<span><b>{esc(SHORT[c["url"]])}</b><small>{len(c["services"])} services</small></span></a>' for c in CATS)
+    mega=''.join(f'<div class="mg"><a class="mg-h" href="{link(c["url"],depth)}">{ic(ICON[c["url"]])}<span><b>{esc(SHORT[c["url"]])}</b></span></a><ul>'+''.join(f'<li><a href="{link(c["url"],depth,"#"+sv["slug"])}">{esc(sv["name"])}</a></li>' for sv in c['services'])+'</ul></div>' for c in CATS)
+    status=f'<span class="status hdr-status" data-status><i></i><span class="t">{C["hoursShort"]}</span></span>'
     return f'''<body>
 <a class="skip" href="#main">Skip to content</a>
 {SPRITE}
@@ -160,7 +161,7 @@ def header(depth,current):
 {a('Reviews','/reviews','reviews')}
 {a('Contact','/contact','contact')}
 </nav>
-<div class="hdr-actions">
+<div class="hdr-actions">{status}
 <button class="kbd-btn" type="button" data-open-pal aria-label="Find a service (shortcut: slash)">{ic('search')}<span class="lbl">Find a service</span><kbd>/</kbd></button>
 <a class="btn btn-call btn-sm" href="tel:{TEL}">{ic('phone')} Call {PH}</a>
 <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Open menu">{ic('menu')}</button>
@@ -173,7 +174,6 @@ def footer(depth):
     cl2=''.join(f'<li><a href="{link(c["url"],depth)}">{esc(SHORT[c["url"]])}</a></li>' for c in CATS[5:])
     idx=json.dumps(svc_index(depth),ensure_ascii=False)
     return f'''
-<nav class="mbar" aria-label="Quick contact"><a class="btn btn-call" href="tel:{TEL}">{ic('phone')} Call {PH}</a><a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination={C['lat']},{C['lng']}" rel="noopener">{ic('pin')} Directions</a></nav>
 <footer class="ftr"><div class="wrap"><div class="ftr-grid">
 <div><a class="brand" href="{link('/',depth)}" aria-label="{NAME}, home"><img src="{r}assets/img/logo-flat-dark.svg" alt="{NAME}" width="172" height="56"></a>
 <p style="margin-top:1rem">{C['street']}<br>{C['city']}, {C['region']} {C['zip']}</p>
@@ -197,7 +197,35 @@ def crumbs(items):
 def bc_ld(items):
     return {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":i+1,"name":t,"item":BASE+u} for i,(t,u) in enumerate(items)]}
 
+
+MAPS_URL="https://www.google.com/maps/search/?api=1&amp;query=42+Ridge+Rd+Phoenixville+PA+19460"
+def _linkify(seg):
+    seg=re.sub(r'42 Ridge Rd(<br>|,\s)Phoenixville,? PA 19460|42 Ridge Rd, Phoenixville, PA|42 Ridge Rd, Phoenixville|42 Ridge Rd',
+        lambda m:f'<a class="addr-link" href="{MAPS_URL}" target="_blank" rel="noopener">{m.group(0)}</a>',seg)
+    return re.sub(r'(?<![\d-])'+re.escape(PH)+r'(?![\d-])',lambda m:f'<a class="tel-link" href="tel:{TEL}">{PH}</a>',seg)
+def _process(body):
+    out=[];pos=0;depth_a=0;skip=None
+    for m in re.finditer(r'<!--.*?-->|<[^>]+>',body,re.S):
+        t=body[pos:m.start()]
+        if t: out.append(t if (depth_a or skip) else _linkify(t))
+        tag=m.group(0); out.append(tag); pos=m.end()
+        x=re.match(r'<(/?)([a-zA-Z0-9]+)',tag)
+        if x:
+            closing,name=x.group(1)=='/',x.group(2).lower()
+            if name=='a': depth_a=max(0,depth_a-1) if closing else depth_a+1
+            if name in('script','style','title','svg','dialog') and not tag.endswith('/>'): skip=None if closing else name
+    t=body[pos:]
+    if t: out.append(t if (depth_a or skip) else _linkify(t))
+    return ''.join(out)
+def postprocess(h):
+    """Link the street address (Google Maps) and phone (tel:) in <main> and <footer> only."""
+    for pat in (r'<main\b.*?</main>',r'<footer class="ftr">.*?</footer>'):
+        m=re.search(pat,h,re.S)
+        if m: h=h[:m.start()]+_process(m.group(0))+h[m.end():]
+    return h
+
 def write(url,content):
+    content=postprocess(content)
     p=ROOT/(pagepath(url)) if url!='/' else ROOT
     p.mkdir(parents=True,exist_ok=True); (p/'index.html').write_text(content,encoding='utf-8')
 
@@ -228,7 +256,7 @@ def page_home():
 <h1>Honest auto repair <span class="hl">in Phoenixville.</span></h1>
 <p class="lede">A family-run shop where you get a clear explanation, a fair price, and no work you didn't agree to.</p>
 <div class="cta-row"><a class="btn btn-call" href="tel:{TEL}">{ic('phone')} Call the shop</a><a class="btn btn-ghost btn-onDark" href="https://www.google.com/maps/dir/?api=1&amp;destination={C['lat']},{C['lng']}" rel="noopener">{ic('pin')} Get directions</a></div>
-<p style="margin-top:1.4rem"><span class="status" data-status><i></i><span class="t">{C['hoursShort']}</span></span></p></div>
+</div>
 <div class="hero-card"><picture><img src="assets/img/logo-dimensional-720.webp" srcset="assets/img/logo-dimensional-540.webp 540w, assets/img/logo-dimensional-720.webp 720w, assets/img/logo-dimensional-1440.webp 1440w" sizes="(max-width:900px) 90vw, 520px" width="720" height="{round(720*1289/2471)}" alt="{NAME} logo"></picture>
 <span class="chip c2">{ic('shield')} Official PA inspection station · OIS #{C['ois']}</span>
 <span class="chip c1">{ic('pin')} {C['street']}, {C['city']}</span></div>
@@ -364,7 +392,7 @@ def page_contact():
     days=[('Mon','Monday'),('Tue','Tuesday'),('Wed','Wednesday'),('Thu','Thursday'),('Fri','Friday')]
     rows=''.join(f'<tr data-d="{a}"><th scope="row">{b}</th><td>8:00 AM–6:00 PM</td></tr>' for a,b in days)+'<tr data-d="Sat"><th scope="row">Saturday</th><td>Closed</td></tr><tr data-d="Sun"><th scope="row">Sunday</th><td>Closed</td></tr>'
     emb=f"https://www.google.com/maps?q={C['lat']},{C['lng']}&output=embed"
-    h+=f'''<main id="main"><div class="phero"><div class="wrap">{crumbs([('Home',link('/',d)),('Contact',None)])}<span class="eyebrow">Contact</span><h1>Call or stop by.</h1><p style="margin-top:1rem"><span class="status" style="border-color:var(--line);background:var(--surface)" data-status><i></i><span class="t">{C['hoursShort']}</span></span></p></div></div>
+    h+=f'''<main id="main"><div class="phero"><div class="wrap">{crumbs([('Home',link('/',d)),('Contact',None)])}<span class="eyebrow">Contact</span><h1>Call or stop by.</h1></div></div>
 <section><div class="wrap contact-grid"><div class="rv">
 <a class="big-phone" href="tel:{TEL}">{PH}</a>
 <dl class="dl"><div><dt>Address</dt><dd>{C['street']}<br>{C['city']}, {C['region']} {C['zip']}</dd></div>
@@ -393,7 +421,7 @@ def page_404():
     h=h.replace('<head>',f'<head><base href="{C.get("basePath","/")}">',1)
     h+=header(d,'')+f'''<main id="main"><div class="wrap err"><div><div class="n" aria-hidden="true">404</div><h1 style="font-size:clamp(1.8rem,3vw,2.6rem)">This page took a wrong turn.</h1><p class="lede" style="margin-inline:auto">Try the services list, or call us at <a href="tel:{TEL}">{PH}</a>.</p><div class="cta-row" style="justify-content:center"><a class="btn btn-call" href="./">Back to home</a><a class="btn btn-ghost" href="services/">Browse services</a></div></div></div></main>'''+footer(d)
     # 404 is served from any depth on GitHub Pages: make asset/links absolute-from-root-safe via <base>
-    (ROOT/'404.html').write_text(h,encoding='utf-8')
+    (ROOT/'404.html').write_text(postprocess(h),encoding='utf-8')
 
 def misc():
     urls=['/','/services','/about','/reviews','/contact']+[c['url'] for c in CATS]

@@ -20,6 +20,7 @@ Nothing below is published. Resolve each item with Dave, then update `src/servic
 ## 2. Assets
 
 - [ ] Photos: shop exterior, Dave, team, bays (About page has empty slots; `showPhotoComingLabel` in config).
+- [ ] Service-page images (`assets/img/svc/`, mapped in `src/images.json`) are generic illustrations, not photos of Dave's shop. Swap for real photos or keep, and confirm Dave is fine with them. EV charging image held back until Dave confirms EV service.
 - [ ] Original vector logo. The flat SVG is traced from the 2576px raster; ask Dave or the sign maker for the source.
 
 ## 3. Deployment

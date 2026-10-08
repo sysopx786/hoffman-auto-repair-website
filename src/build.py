@@ -18,6 +18,7 @@ SV={}
 for c in CATS:
     for s in c['services']: SV[s['name']]=(c,s)
 ICON={'/inspections-emissions':'shield','/towing-hauling':'truck','/roadside-recovery':'lifebuoy','/property-parking-impound':'parking','/recycling-salvage':'recycle','/engine-drivetrain':'gear','/cooling-heating-corrosion':'therm','/tires-wheels-suspension':'tire','/body-glass-imports':'car'}
+IMG=json.load(open(Path(__file__).parent/'images.json'))
 SHORT={'/inspections-emissions':'Inspections & Emissions','/towing-hauling':'Towing & Hauling','/roadside-recovery':'Roadside & Recovery','/property-parking-impound':'Property, Parking & Impound','/recycling-salvage':'Recycling & Salvage','/engine-drivetrain':'Engine & Drivetrain','/cooling-heating-corrosion':'Cooling, Heating & Corrosion','/tires-wheels-suspension':'Tires, Wheels & Suspension','/body-glass-imports':'Body, Glass & Imports'}
 REL={
 'Vehicle Safety Inspections':['Pre-Purchase Inspections','Tires','Windshield Wiper Replacement'],
@@ -343,7 +344,11 @@ def page_category(c):
                     cc,ss=SV[n]; ls.append(f'<a href="{link(cc["url"],d,"#"+ss["slug"]) if cc is not c else "#"+ss["slug"]}">{esc(n)}</a>')
             if ls: rl=f'<div class="rel"><span>Related:</span>{"".join(ls)}</div>'
         faqs=f'<h3 class="q">Questions about {esc(s["name"].lower() if False else s["name"])}</h3>'+faq_html(s,c['slug']) if s['faqs'] else ''
-        body+=f'<article class="svc rv" id="{s["slug"]}"><h2>{esc(s["name"])}</h2><p>{esc(s["desc"])}</p>{faqs}{rl}</article>'
+        im=IMG.get(s['name']); fig=''
+        if im:
+            b=f'{"../"*d}assets/img/svc/{im["file"]}'
+            fig=f'<figure class="svc-img"><img src="{b}-1168.webp" srcset="{b}-640.webp 640w, {b}-1168.webp 1168w" sizes="(max-width:700px) 92vw, 560px" width="1168" height="880" loading="lazy" decoding="async" alt="{esc(im["alt"])}"></figure>'
+        body+=f'<article class="svc rv" id="{s["slug"]}"><h2>{esc(s["name"])}</h2><p>{esc(s["desc"])}</p>{fig}{faqs}{rl}</article>'
     others=''.join(f'<a href="{link(o["url"],d)}">{ic(ICON[o["url"]])}{esc(SHORT[o["url"]])}</a>' for o in CATS if o is not c)
     h+=f'''<main id="main"><div class="phero"><div class="wrap">{crumbs([('Home',link('/',d)),('Services',link('/services',d)),(sh,None)])}
 <span class="eyebrow">{len(c['services'])} services</span><h1>{esc(sh)}</h1><p class="lede">{esc(c['intro'])}</p>

@@ -97,8 +97,10 @@ SPRITE='''<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidd
 <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/></symbol>
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
 </defs></svg>'''
+MAPS_URL="https://www.google.com/maps/search/?api=1&amp;query=42+Ridge+Rd+Phoenixville+PA+19460"
 def ic(n,cls=''): return f'<svg class="icon {cls}" aria-hidden="true"><use href="#i-{n}"/></svg>'
 
 def rel(depth): return '../'*depth
@@ -160,6 +162,11 @@ def header(depth,current):
 {a('About','/about','about')}
 {a('Reviews','/reviews','reviews')}
 {a('Contact','/contact','contact')}
+<a class="nav-x" href="{link('/services',depth)}">All services</a>
+<a class="nav-x" href="{link('/sitemap',depth)}"{' aria-current="page"' if current=='sitemap' else ''}>Sitemap</a>
+<a class="nav-x" href="{link('/privacy',depth)}">Privacy</a>
+<a class="nav-x nav-call" href="tel:{TEL}">{ic('phone')} Call {PH}</a>
+<a class="nav-x" href="{MAPS_URL}" target="_blank" rel="noopener">{ic('pin')} {C['street']}, {C['city']}</a>
 </nav>
 <div class="hdr-actions">{status}
 <button class="kbd-btn" type="button" data-open-pal aria-label="Find a service (shortcut: slash)">{ic('search')}<span class="lbl">Find a service</span><kbd>/</kbd></button>
@@ -180,8 +187,9 @@ def footer(depth):
 <p><a href="tel:{TEL}">{PH}</a><br>{C['hoursShort']}<br>Closed Sat–Sun</p></div>
 <div><h2>Services</h2><ul>{cl}</ul></div>
 <div><h2>More services</h2><ul>{cl2}</ul></div>
-<div><h2>Company</h2><ul><li><a href="{link('/about',depth)}">About</a></li><li><a href="{link('/reviews',depth)}">Reviews</a></li><li><a href="{link('/contact',depth)}">Contact</a></li><li><a href="{link('/services',depth)}">All services</a></li><li><a href="{link('/privacy',depth)}">Privacy</a></li></ul></div>
+<div><h2>Company</h2><ul><li><a href="{link('/about',depth)}">About</a></li><li><a href="{link('/reviews',depth)}">Reviews</a></li><li><a href="{link('/contact',depth)}">Contact</a></li><li><a href="{link('/services',depth)}">All services</a></li><li><a href="{link('/privacy',depth)}">Privacy</a></li><li><a href="{link('/sitemap',depth)}">Sitemap</a></li></ul></div>
 </div><div class="legal"><span>© <span id="yr">2026</span> {NAME}. Official Pennsylvania inspection station (OIS #{C['ois']}).</span><span>{C['street']}, {C['city']}, {C['region']}</span></div></div></footer>
+<a class="to-home" href="{link('/',depth)}" aria-label="Back to home" hidden>{ic('home')}<span>Home</span></a>
 <dialog class="pal" id="pal" aria-label="Find a service"><div class="pal-in">{ic('search')}<input type="text" placeholder="Search 58 services…" aria-label="Search services" autocomplete="off"><button class="kbd-btn" type="button" onclick="this.closest('dialog').close()" aria-label="Close search">{ic('close')}</button></div><ul class="pal-list"></ul></dialog>
 <script>window.__SERVICES={idx};document.getElementById('yr').textContent=new Date().getFullYear()</script>
 <script src="{r}assets/js/site.js" defer></script>
@@ -198,7 +206,6 @@ def bc_ld(items):
     return {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":i+1,"name":t,"item":BASE+u} for i,(t,u) in enumerate(items)]}
 
 
-MAPS_URL="https://www.google.com/maps/search/?api=1&amp;query=42+Ridge+Rd+Phoenixville+PA+19460"
 def _linkify(seg):
     seg=re.sub(r'42 Ridge Rd(<br>|,\s)Phoenixville,? PA 19460|42 Ridge Rd, Phoenixville, PA|42 Ridge Rd, Phoenixville|42 Ridge Rd',
         lambda m:f'<a class="addr-link" href="{MAPS_URL}" target="_blank" rel="noopener">{m.group(0)}</a>',seg)
@@ -414,6 +421,18 @@ def page_privacy():
 <p class="note">Questions? Call us {C['hoursShort']}.</p></div></section></main>'''+footer(d)
     write(url,h)
 
+def page_sitemap():
+    d=1; url='/sitemap'
+    t=f'Sitemap | {NAME}'
+    h=head('sitemap',d,t,'Every page and service on the Dave Hoffman Auto Repair website.',url,None)+header(d,'sitemap')
+    main_pages=[('Home','/'),('All services','/services'),('About','/about'),('Reviews','/reviews'),('Contact','/contact'),('Privacy','/privacy')]
+    mp=''.join(f'<li><a href="{link(u,d)}">{lbl}</a></li>' for lbl,u in main_pages)
+    mp+=f'<li><a href="{rel(d)}sitemap.xml">sitemap.xml (for search engines)</a></li>'
+    cats=''.join(f'<div class="sm-col"><h2><a href="{link(c["url"],d)}">{esc(SHORT[c["url"]])}</a></h2><ul>'+''.join(f'<li><a href="{link(c["url"],d,"#"+sv["slug"])}">{esc(sv["name"])}</a></li>' for sv in c['services'])+'</ul></div>' for c in CATS)
+    h+=f'''<main id="main"><div class="phero"><div class="wrap">{crumbs([('Home',link('/',d)),('Sitemap',None)])}<h1>Sitemap</h1><p class="lede">Every page and service on this site.</p></div></div>
+<section><div class="wrap"><div class="sitemap"><div class="sm-col"><h2>Pages</h2><ul>{mp}</ul></div>{cats}</div></div></section></main>'''+footer(d)
+    write(url,h)
+
 def page_404():
     d=0
     h=head('404',d,f'Page not found | {NAME}','That page does not exist.','/404.html',None)
@@ -424,7 +443,7 @@ def page_404():
     (ROOT/'404.html').write_text(postprocess(h),encoding='utf-8')
 
 def misc():
-    urls=['/','/services','/about','/reviews','/contact']+[c['url'] for c in CATS]
+    urls=['/','/services','/about','/reviews','/contact','/sitemap']+[c['url'] for c in CATS]
     sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{BASE}{u}{"" if u=="/" else "/"}</loc></url>\n' for u in urls)+'</urlset>\n'
     (ROOT/'sitemap.xml').write_text(sm)
     bots=['GPTBot','OAI-SearchBot','ChatGPT-User','ClaudeBot','Claude-SearchBot','Claude-User','PerplexityBot','Google-Extended','Applebot-Extended']
@@ -434,5 +453,5 @@ def misc():
 if __name__=='__main__':
     page_home(); page_services()
     for c in CATS: page_category(c)
-    page_about(); page_reviews(); page_contact(); page_privacy(); page_404(); misc()
-    print('built', 5+len(CATS)+2)
+    page_about(); page_reviews(); page_contact(); page_privacy(); page_sitemap(); page_404(); misc()
+    print('built', 5+len(CATS)+3)

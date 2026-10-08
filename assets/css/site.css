@@ -319,3 +319,29 @@ dialog.pal::backdrop{background:rgba(8,14,28,.6);backdrop-filter:blur(4px)}
   .brand img,.hdr .brand img{height:calc(var(--hdr) - 54px)}
 }
 @media (max-width:560px){.mega{grid-template-columns:1fr}}
+
+/* mobile menu: backdrop-filter on .hdr traps the fixed nav inside the header (only ~2 links showed) */
+.nav>a.nav-x{display:none}
+@media (max-width:1060px){
+  .hdr{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  .nav{height:calc(100dvh - var(--hdr));padding-bottom:40px;overscroll-behavior:contain}
+  .nav>a.nav-x{display:flex;font-size:1.1rem;padding:.9rem .5rem;width:100%;justify-content:flex-start;gap:.6rem;border-bottom:1px solid var(--line-2);border-radius:0}
+  .nav>a.nav-call{font-weight:600;color:var(--teal)}
+}
+/* back-to-home button */
+.to-home{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:95;display:inline-flex;align-items:center;gap:.45rem;min-height:48px;padding:0 1rem 0 .85rem;border-radius:999px;background:var(--navy);color:#fff;font:600 .95rem/1 var(--f-text);text-decoration:none;box-shadow:0 10px 28px -8px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .25s,transform .25s}
+.to-home.show{opacity:1;transform:none;pointer-events:auto}
+.to-home[hidden]{display:none}
+.to-home .icon{width:1.25em;height:1.25em}
+.to-home:hover{background:var(--teal)}
+.to-home:focus-visible{outline:3px solid var(--teal-2);outline-offset:3px}
+@media (max-width:480px){.to-home span{display:none}.to-home{padding:0;width:48px;justify-content:center}}
+@media (prefers-reduced-motion:reduce){.to-home{transition:none}}
+/* sitemap page */
+.sitemap{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem 2.5rem}
+.sm-col h2{font-size:1.1rem;margin:0 0 .6rem}
+.sm-col h2 a{color:var(--ink);text-decoration:none}
+.sm-col h2 a:hover{color:var(--teal);text-decoration:underline}
+.sm-col ul{list-style:none;margin:0;padding:0}
+.sm-col li a{display:block;padding:.3rem 0;color:var(--ink);text-underline-offset:3px}
+.sm-col li a:hover{color:var(--teal);text-decoration:underline}

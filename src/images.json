@@ -1,13 +1,50 @@
 {
-  "Vehicle Safety Inspections": {"file": "inspection-seal", "alt": "Brass embossing seal and fountain pen on a sheet of cream paper"},
-  "Pre-Purchase Inspections": {"file": "pre-purchase-checklist", "alt": "Car with the hood open beside a blank inspection checklist and a flashlight"},
-  "Emissions Testing": {"file": "obd-emissions-testing", "alt": "Handheld OBD scan tool connected to an engine control module"},
-  "Emissions Control": {"file": "emissions-control", "alt": "Catalytic converter and oxygen sensor"},
-  "Flat Bed Truck Service": {"file": "flatbed-towing", "alt": "Flatbed tow truck carrying a gray sedan"},
-  "Junk Car Removal": {"file": "junk-car-paperwork", "alt": "Blank license plate, vehicle title and car key"},
-  "Fuel System Service & Repair": {"file": "fuel-system", "alt": "Fuel tank with a fuel pump and fuel filter"},
-  "Spark Plugs": {"file": "spark-plugs", "alt": "Set of four spark plugs"},
-  "Heating System Service & Repair": {"file": "heating-system", "alt": "Heater core, blower motor and heater hose"},
-  "Corrosion Control": {"file": "corrosion-control", "alt": "Rusted steel bracket next to a wire brush"},
-  "Collision Services": {"file": "collision-repair", "alt": "Car door with a dent, a body filler spreader and a sanding block"}
+  "Vehicle Safety Inspections": {
+    "file": "inspection-seal",
+    "alt": "Brass embossing seal and fountain pen on a sheet of cream paper"
+  },
+  "Pre-Purchase Inspections": {
+    "file": "pre-purchase-checklist",
+    "alt": "Car with the hood open beside a blank inspection checklist and a flashlight"
+  },
+  "Emissions Testing": {
+    "file": "obd-emissions-testing",
+    "alt": "Handheld OBD scan tool connected to an engine control module"
+  },
+  "Emissions Control": {
+    "file": "emissions-control",
+    "alt": "Catalytic converter and oxygen sensor"
+  },
+  "Flat Bed Truck Service": {
+    "file": "flatbed-towing",
+    "alt": "Flatbed tow truck carrying a gray sedan"
+  },
+  "Junk Car Removal": {
+    "file": "junk-car-paperwork",
+    "alt": "Blank license plate, vehicle title and car key"
+  },
+  "Fuel System Service & Repair": {
+    "file": "fuel-system",
+    "alt": "Fuel tank with a fuel pump and fuel filter"
+  },
+  "Spark Plugs": {
+    "file": "spark-plugs",
+    "alt": "Set of four spark plugs"
+  },
+  "Heating System Service & Repair": {
+    "file": "heating-system",
+    "alt": "Heater core, blower motor and heater hose"
+  },
+  "Corrosion Control": {
+    "file": "corrosion-control",
+    "alt": "Rusted steel bracket next to a wire brush"
+  },
+  "Collision Services": {
+    "file": "collision-repair",
+    "alt": "Car door with a dent, a body filler spreader and a sanding block"
+  },
+  "Imports": {
+    "file": "ev-charging",
+    "alt": "Silver hatchback plugged into a charging cable"
+  }
 }
